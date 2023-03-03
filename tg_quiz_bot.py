@@ -98,9 +98,11 @@ def check_answer(update: Update, context: CallbackContext, quiz_questions):
             context.user_data['score'] += _right
             reply_markup = ReplyKeyboardMarkup(START_KEYBOARD, resize_keyboard=True)
             update.message.reply_text(
-                'Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»',
+                'Правильно! Поздравляю!',
                 reply_markup=reply_markup
             )
+            if context.user_data['score'] >= _win:
+                return win_game(update, context)
             return handle_new_question_request(update, context, quiz_questions)
         else:
             reply_markup = ReplyKeyboardMarkup(CUSTOM_KEYBOARD, resize_keyboard=True)
@@ -126,27 +128,32 @@ def end_game(update: Update, context: CallbackContext):
         text=message_text,
         reply_markup=reply_markup,
     )
-    score = 0
+    context.user_data['score'] = 0
+    return ConversationHandler.END
+
+
+def win_game(update: Update, context: CallbackContext):
+    print('hendler: win_game')
+    if context.user_data:
+        del context.user_data[update.effective_user.id]
+    
+    score = context.user_data['score']
+    message_text = f'''Поздравляю - вы выиграли!
+Ваш счет: {score}
+
+Чтобы начать снова - нажмите кнопку.
+'''
+    reply_markup = ReplyKeyboardMarkup(START_KEYBOARD, resize_keyboard=True)
+    update.message.reply_text(
+        text=message_text,
+        reply_markup=reply_markup,
+    )
+    context.user_data['score'] = 0
     return ConversationHandler.END
 
 
 def echo(update: Update, context: CallbackContext, quiz_questions) -> None:
     print('hendler: echo')
-    # if update.message.text == 'Новый вопрос':
-    #     question = random.choice(list(quiz_questions))
-    #     context.user_data[update.effective_user.id] = question
-    #     update.message.reply_text(question)
-    # else:
-    #     if context.user_data[update.effective_user.id]:
-    #         print(quiz_questions[context.user_data[update.effective_user.id]])
-    #         answer = quiz_questions[context.user_data[update.effective_user.id]]
-    #         user_say = update.message.text
-    #         if user_say.lower() in answer.lower():
-    #             update.message.reply_text('Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»')
-    #         else:
-    #             update.message.reply_text('Неправильно… Попробуешь ещё раз?')
-    #     else:
-    #         update.message.reply_text(update.message.text)
     update.message.reply_text(update.message.text)
 
 
