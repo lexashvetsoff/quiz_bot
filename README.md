@@ -23,7 +23,7 @@ pip install -r requirements.txt
 
 ## Telegram бот
 
-![Alt text](https://github.com/lexashvetsoff/supportVerbGame/blob/main/screen/demo_tg_bot.gif)  
+![Alt text](https://github.com/lexashvetsoff/quiz_bot/blob/main/screenshots/tg.gif)  
 [Пример рабочего бота](https://t.me/quiz_questionsBot)
 
 ### Запуск
@@ -34,7 +34,7 @@ python3 tg_quiz_bot.py
 
 ## Vk бот
 
-![Alt text](https://github.com/lexashvetsoff/supportVerbGame/blob/main/screen/demo_vk_bot.gif)  
+![Alt text](https://github.com/lexashvetsoff/quiz_bot/blob/main/screenshots/vk.gif)  
 Пример работы можно посмотреть написав в [группу в vk](https://vk.com/public219165908)
 
 ### Запуск
