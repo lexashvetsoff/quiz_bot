@@ -38,21 +38,6 @@ def get_custom_keyboard():
     return keyboard
 
 
-def get_keyboard():
-    keyboard = VkKeyboard(one_time=True)
-
-    keyboard.add_button('Белая кнопка', color=VkKeyboardColor.SECONDARY)
-    keyboard.add_button('Зелёная кнопка', color=VkKeyboardColor.POSITIVE)
-
-    keyboard.add_line()  # Переход на вторую строку
-    keyboard.add_button('Красная кнопка', color=VkKeyboardColor.NEGATIVE)
-
-    keyboard.add_line()
-    keyboard.add_button('Синяя кнопка', color=VkKeyboardColor.PRIMARY)
-
-    return keyboard
-
-
 def echo(event, vk_api):
     keyboard = get_start_keyboard()
     vk_api.messages.send(
@@ -80,10 +65,8 @@ def start(event, vk_api, db_redis) -> None:
 
 
 def handle_new_question_request(event, vk_api, db_redis, quiz_questions):
-    print('hendler: handle_new_question_request')
     question = random.choice(list(quiz_questions))
     db_redis.hset(f'user_{event.user_id}', event.user_id, question)
-    print(quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)])
     keyboard = get_custom_keyboard()
     vk_api.messages.send(
         user_id=event.user_id,
@@ -139,9 +122,7 @@ def handle_solution_attempt(event, vk_api, db_redis, quiz_questions):
 
 
 def check_answer(event, vk_api, db_redis, quiz_questions):
-    print('hendler: check_answer')
     if db_redis.hget(f'user_{event.user_id}', event.user_id):
-        print(quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)])
         answer = quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)]
         user_say = event.text
         if user_say.lower() in answer.lower():
@@ -167,7 +148,6 @@ def check_answer(event, vk_api, db_redis, quiz_questions):
 
 
 def end_game(event, vk_api, db_redis):
-    print('hendler: end_game')
     if db_redis.hget(f'user_{event.user_id}', event.user_id):
         db_redis.hdel(f'user_{event.user_id}', event.user_id)
     
@@ -188,7 +168,6 @@ def end_game(event, vk_api, db_redis):
 
 
 def win_game(event, vk_api, db_redis):
-    print('hendler: win_game')
     if db_redis.hget(f'user_{event.user_id}', event.user_id):
         db_redis.hdel(f'user_{event.user_id}', event.user_id)
     

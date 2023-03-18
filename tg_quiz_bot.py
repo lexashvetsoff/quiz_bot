@@ -4,7 +4,6 @@ import random
 from dotenv import load_dotenv
 from functools import partial
 
-# from telegram.constants import MENU_BUTTON_COMMANDS
 from telegram import Update, ForceReply, ReplyKeyboardMarkup, MenuButtonCommands, MenuButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 
@@ -23,17 +22,13 @@ _loss = 1
 _win = 20
 
 
-# Define a few command handlers. These usually take the two arguments update and
-# context.
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
-    # user = update.effective_user
     if context.user_data:
         del context.user_data[update.effective_user.id]
         context.user_data['score'] = 0
         return start_quiz_questions(update, context)
     context.user_data['score'] = 0
-    print(context.user_data)
     reply_markup = ReplyKeyboardMarkup(START_KEYBOARD, resize_keyboard=True)
     update.message.reply_text(
         'Привет! Я бот для викторин!',
@@ -50,13 +45,7 @@ def start_quiz_questions(update: Update, context: CallbackContext):
     return 'new_question'
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
-
-
 def handle_new_question_request(update: Update, context: CallbackContext, quiz_questions):
-    print('hendler: handle_new_question_request')
     question = random.choice(list(quiz_questions))
     context.user_data[update.effective_user.id] = question
     reply_markup = ReplyKeyboardMarkup(CUSTOM_KEYBOARD, resize_keyboard=True)
@@ -65,7 +54,6 @@ def handle_new_question_request(update: Update, context: CallbackContext, quiz_q
 
 
 def handle_solution_attempt(update: Update, context: CallbackContext, quiz_questions):
-    print('hendler: handle_solution_attempt')
     # Новый вопрос
     if update.message.text == 'Новый вопрос':
         return handle_new_question_request(update, context, quiz_questions)
@@ -89,9 +77,7 @@ def handle_solution_attempt(update: Update, context: CallbackContext, quiz_quest
 
 
 def check_answer(update: Update, context: CallbackContext, quiz_questions):
-    print('hendler: check_answer')
     if context.user_data:
-        print(quiz_questions[context.user_data[update.effective_user.id]])
         answer = quiz_questions[context.user_data[update.effective_user.id]]
         user_say = update.message.text
         if user_say.lower() in answer.lower():
@@ -113,7 +99,6 @@ def check_answer(update: Update, context: CallbackContext, quiz_questions):
 
 
 def end_game(update: Update, context: CallbackContext):
-    print('hendler: end_game')
     if context.user_data:
         del context.user_data[update.effective_user.id]
     
@@ -133,7 +118,6 @@ def end_game(update: Update, context: CallbackContext):
 
 
 def win_game(update: Update, context: CallbackContext):
-    print('hendler: win_game')
     if context.user_data:
         del context.user_data[update.effective_user.id]
     
@@ -153,7 +137,6 @@ def win_game(update: Update, context: CallbackContext):
 
 
 def echo(update: Update, context: CallbackContext, quiz_questions) -> None:
-    print('hendler: echo')
     update.message.reply_text(update.message.text)
 
 
@@ -191,7 +174,6 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(quiz)
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
 
     # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_echo))
@@ -199,9 +181,6 @@ def main() -> None:
     # Start the Bot
     updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
