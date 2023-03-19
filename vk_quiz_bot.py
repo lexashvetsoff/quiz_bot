@@ -207,10 +207,13 @@ def event_listening(vk_api, longpoll, db_redis, quiz_questions):
 
 def main():
     load_dotenv()
-    db_redis = redis.Redis(host='localhost', port=6379, db=0, charset='utf-8', decode_responses=True)
 
     vk_token = os.getenv('VK_TOKEN')
     files_path = os.environ['FILES_PATH']
+    db_host = os.environ['DB_HOST']
+    db_port = os.environ['DB_PORT']
+
+    db_redis = redis.Redis(host=db_host, port=db_port, db=0, charset='utf-8', decode_responses=True)
 
     quiz_questions = union_questions(files_path)
 
