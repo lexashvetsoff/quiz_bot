@@ -136,10 +136,6 @@ def win_game(update: Update, context: CallbackContext):
     return ConversationHandler.END
 
 
-def echo(update: Update, context: CallbackContext, quiz_questions) -> None:
-    update.message.reply_text(update.message.text)
-
-
 def main() -> None:
     load_dotenv()
 
@@ -152,7 +148,6 @@ def main() -> None:
 
     quiz_questions = union_questions(files_path)
 
-    wrap_echo = partial(echo, quiz_questions=quiz_questions)
     wrap_handle_new_question_request = partial(handle_new_question_request, quiz_questions=quiz_questions)
     wrap_user_answer = partial(handle_solution_attempt, quiz_questions=quiz_questions)
 
@@ -172,8 +167,6 @@ def main() -> None:
 
     dispatcher.add_handler(quiz)
     dispatcher.add_handler(CommandHandler("start", start))
-
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_echo))
 
     updater.start_polling()
 
