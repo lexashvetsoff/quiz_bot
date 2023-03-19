@@ -157,10 +157,8 @@ def main() -> None:
     wrap_user_answer = partial(handle_solution_attempt, quiz_questions=quiz_questions)
 
     """Start the bot."""
-    # Create the Updater and pass it your bot's token.
     updater = Updater(TG_TOKEN)
 
-    # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
     quiz = ConversationHandler(
@@ -172,14 +170,11 @@ def main() -> None:
         fallbacks=[]
     )
 
-    # on different commands - answer in Telegram
     dispatcher.add_handler(quiz)
     dispatcher.add_handler(CommandHandler("start", start))
 
-    # on non command i.e message - echo the message on Telegram
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_echo))
 
-    # Start the Bot
     updater.start_polling()
 
     updater.idle()
