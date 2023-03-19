@@ -143,7 +143,7 @@ def echo(update: Update, context: CallbackContext, quiz_questions) -> None:
 def main() -> None:
     load_dotenv()
 
-    TG_TOKEN = os.environ['TG_TOKEN']
+    tg_token = os.environ['TG_TOKEN']
     files_path = os.environ['FILES_PATH']
 
     logging.basicConfig(
@@ -157,7 +157,7 @@ def main() -> None:
     wrap_user_answer = partial(handle_solution_attempt, quiz_questions=quiz_questions)
 
     """Start the bot."""
-    updater = Updater(TG_TOKEN)
+    updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
 
