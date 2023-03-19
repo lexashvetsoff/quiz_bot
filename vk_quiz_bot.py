@@ -209,8 +209,9 @@ def main():
     db_redis = redis.Redis(host='localhost', port=6379, db=0, charset='utf-8', decode_responses=True)
 
     vk_token = os.getenv('VK_TOKEN')
+    files_path = os.environ['FILES_PATH']
 
-    quiz_questions = union_questions()
+    quiz_questions = union_questions(files_path)
 
     vk_session = vk.VkApi(token=vk_token)
     vk_api = vk_session.get_api()

@@ -19,19 +19,7 @@ def get_questions(file_path, questions):
                 questions[key_question] = value_question
 
 
-def union_questions():
-    files_path = [
-        'quiz_questions/1vs1201.txt',
-        'quiz_questions/12koll12.txt',
-        'quiz_questions/200letsp.txt',
-        'quiz_questions/armch12.txt',
-        'quiz_questions/balt08-3.txt',
-        'quiz_questions/barhat12.txt',
-        'quiz_questions/belsin02.txt',
-        'quiz_questions/chmlyu14.txt',
-        'quiz_questions/drakon10.txt',
-        'quiz_questions/genfin03.txt',
-    ]
+def union_questions(files_path):
     questions = {}
 
     for file_path in files_path:

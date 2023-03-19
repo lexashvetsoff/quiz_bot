@@ -144,12 +144,13 @@ def main() -> None:
     load_dotenv()
 
     TG_TOKEN = os.environ['TG_TOKEN']
+    files_path = os.environ['FILES_PATH']
 
     logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
     )
 
-    quiz_questions = union_questions()
+    quiz_questions = union_questions(files_path)
 
     wrap_echo = partial(echo, quiz_questions=quiz_questions)
     wrap_handle_new_question_request = partial(handle_new_question_request, quiz_questions=quiz_questions)
