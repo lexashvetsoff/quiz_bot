@@ -1,5 +1,6 @@
 import os
 import random
+import textwrap
 from dotenv import load_dotenv
 
 from questions import union_questions
@@ -153,16 +154,16 @@ def end_game(event, vk_api, db_redis):
     
     score = db_redis.hget(f'user_{event.user_id}', 'score')
     message_text = f'''Игра закончена!
-Ваш счет: {score}
+                    Ваш счет: {score}
 
-Чтобы начать снова - нажмите кнопку.
-'''
+                    Чтобы начать снова - нажмите кнопку.
+                    '''
     db_redis.hset(f'user_{event.user_id}', 'score', 0)
     keyboard = get_start_quiz_questions_keyboard()
     vk_api.messages.send(
         user_id=event.user_id,
         keyboard=keyboard.get_keyboard(),
-        message=message_text,
+        message=textwrap.dedent(message_text),
         random_id=random.randint(1, 1000)
     )
 
@@ -173,16 +174,16 @@ def win_game(event, vk_api, db_redis):
     
     score = db_redis.hget(f'user_{event.user_id}', 'score')
     message_text = f'''Поздравляю - вы выиграли!
-Ваш счет: {score}
+                    Ваш счет: {score}
 
-Чтобы начать снова - нажмите кнопку.
-'''
+                    Чтобы начать снова - нажмите кнопку.
+                    '''
     db_redis.hset(f'user_{event.user_id}', 'score', 0)
     keyboard = get_start_quiz_questions_keyboard()
     vk_api.messages.send(
         user_id=event.user_id,
         keyboard=keyboard.get_keyboard(),
-        message=message_text,
+        message=textwrap.dedent(message_text),
         random_id=random.randint(1, 1000)
     )
 

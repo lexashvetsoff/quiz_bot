@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+import textwrap
 from dotenv import load_dotenv
 from functools import partial
 
@@ -104,13 +105,13 @@ def end_game(update: Update, context: CallbackContext):
     
     score = context.user_data['score']
     message_text = f'''Игра закончена!
-Ваш счет: {score}
+                    Ваш счет: {score}
 
-Чтобы начать снова - нажмите кнопку.
-'''
+                    Чтобы начать снова - нажмите кнопку.
+                    '''
     reply_markup = ReplyKeyboardMarkup(START_KEYBOARD, resize_keyboard=True)
     update.message.reply_text(
-        text=message_text,
+        text=textwrap.dedent(message_text),
         reply_markup=reply_markup,
     )
     context.user_data['score'] = 0
@@ -123,13 +124,13 @@ def win_game(update: Update, context: CallbackContext):
     
     score = context.user_data['score']
     message_text = f'''Поздравляю - вы выиграли!
-Ваш счет: {score}
+                    Ваш счет: {score}
 
-Чтобы начать снова - нажмите кнопку.
-'''
+                    Чтобы начать снова - нажмите кнопку.
+                    '''
     reply_markup = ReplyKeyboardMarkup(START_KEYBOARD, resize_keyboard=True)
     update.message.reply_text(
-        text=message_text,
+        text=textwrap.dedent(message_text),
         reply_markup=reply_markup,
     )
     context.user_data['score'] = 0
