@@ -39,16 +39,6 @@ def get_custom_keyboard():
     return keyboard
 
 
-def echo(event, vk_api):
-    keyboard = get_start_keyboard()
-    vk_api.messages.send(
-        user_id=event.user_id,
-        keyboard=keyboard.get_keyboard(),
-        message=event.text,
-        random_id=random.randint(1, 1000)
-    )
-
-
 def start(event, vk_api, db_redis) -> None:
     """Send a message when the command /start is issued."""
     if db_redis.hget(f'user_{event.user_id}', event.user_id):
@@ -201,7 +191,6 @@ def event_listening(vk_api, longpoll, db_redis, quiz_questions):
                 handle_new_question_request(event, vk_api, db_redis, quiz_questions)
             elif db_redis.hget(f'user_{event.user_id}', event.user_id):
                 handle_solution_attempt(event, vk_api, db_redis, quiz_questions)
-            else: echo(event, vk_api)
 
 
 
