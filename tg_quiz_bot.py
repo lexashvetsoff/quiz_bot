@@ -115,7 +115,6 @@ def end_game(update: Update, context: CallbackContext):
         reply_markup=reply_markup,
     )
     context.user_data['score'] = 0
-    return ConversationHandler.END
 
 
 def win_game(update: Update, context: CallbackContext):
@@ -134,7 +133,6 @@ def win_game(update: Update, context: CallbackContext):
         reply_markup=reply_markup,
     )
     context.user_data['score'] = 0
-    return ConversationHandler.END
 
 
 def main() -> None:
@@ -156,7 +154,7 @@ def main() -> None:
     updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
-    
+
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.regex('^(Начать)$') & ~Filters.command, start_quiz_questions))
     dispatcher.add_handler(MessageHandler(Filters.regex('^(Новый вопрос)$') & ~Filters.command, wrap_handle_new_question_request))
