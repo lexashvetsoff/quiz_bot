@@ -55,8 +55,11 @@ def handle_new_question_request(update: Update, context: CallbackContext, quiz_q
 
 
 def handle_solution_attempt(update: Update, context: CallbackContext, quiz_questions):
+    # Начать
+    if update.message.text == 'Начать':
+        return start_quiz_questions(update, context)
     # Новый вопрос
-    if update.message.text == 'Новый вопрос':
+    elif update.message.text == 'Новый вопрос':
         return handle_new_question_request(update, context, quiz_questions)
     # Сдаться
     elif update.message.text == 'Сдаться':
@@ -155,7 +158,6 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.regex('^(Начать)$') & ~Filters.command, start_quiz_questions))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_user_answer))
 
     updater.start_polling()
