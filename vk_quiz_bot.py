@@ -78,40 +78,6 @@ def start_quiz_questions(vk_api, event, db_redis):
     )
 
 
-def handle_solution_attempt(event, vk_api, db_redis, quiz_questions):
-    reseived_message = event.text
-    # Новый вопрос
-    if reseived_message == 'Новый вопрос':
-        return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
-    # Сдаться
-    elif reseived_message == 'Сдаться':
-        score = int(db_redis.hget(f'user_{event.user_id}', 'score'))
-        score -= _loss
-        db_redis.hset(f'user_{event.user_id}', 'score', score)
-        answer = quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)]
-        vk_api.messages.send(
-            user_id=event.user_id,
-            message=f'Правильный ответ: {answer}',
-            random_id=random.randint(1, 1000)
-        )
-        return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
-    # Мой счет
-    elif reseived_message == 'Мой счет':
-        score = db_redis.hget(f'user_{event.user_id}', 'score')
-        message_text = f'Ваш счет: {score}'
-        vk_api.messages.send(
-            user_id=event.user_id,
-            message=message_text,
-            random_id=random.randint(1, 1000)
-        )
-        return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
-    # Закончить игру
-    elif reseived_message == 'Закончить игру':
-        end_game(event, vk_api, db_redis)
-    else:
-        return check_answer(event, vk_api, db_redis, quiz_questions)
-
-
 def check_answer(event, vk_api, db_redis, quiz_questions):
     if db_redis.hget(f'user_{event.user_id}', event.user_id):
         answer = quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)]
@@ -187,10 +153,36 @@ def event_listening(vk_api, longpoll, db_redis, quiz_questions):
                 start(event, vk_api, db_redis)
             elif reseived_message == 'Начать':
                 start_quiz_questions(vk_api, event, db_redis)
+            # Новый вопрос
             elif reseived_message == 'Новый вопрос':
-                handle_new_question_request(event, vk_api, db_redis, quiz_questions)
-            elif db_redis.hget(f'user_{event.user_id}', event.user_id):
-                handle_solution_attempt(event, vk_api, db_redis, quiz_questions)
+                return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
+            # Сдаться
+            elif reseived_message == 'Сдаться':
+                score = int(db_redis.hget(f'user_{event.user_id}', 'score'))
+                score -= _loss
+                db_redis.hset(f'user_{event.user_id}', 'score', score)
+                answer = quiz_questions[db_redis.hget(f'user_{event.user_id}', event.user_id)]
+                vk_api.messages.send(
+                    user_id=event.user_id,
+                    message=f'Правильный ответ: {answer}',
+                    random_id=random.randint(1, 1000)
+                )
+                return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
+            # Мой счет
+            elif reseived_message == 'Мой счет':
+                score = db_redis.hget(f'user_{event.user_id}', 'score')
+                message_text = f'Ваш счет: {score}'
+                vk_api.messages.send(
+                    user_id=event.user_id,
+                    message=message_text,
+                    random_id=random.randint(1, 1000)
+                )
+                return handle_new_question_request(event, vk_api, db_redis, quiz_questions)
+            # Закончить игру
+            elif reseived_message == 'Закончить игру':
+                end_game(event, vk_api, db_redis)
+            else:
+                return check_answer(event, vk_api, db_redis, quiz_questions)
 
 
 

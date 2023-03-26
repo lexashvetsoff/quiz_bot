@@ -156,18 +156,11 @@ def main() -> None:
     updater = Updater(tg_token)
 
     dispatcher = updater.dispatcher
-
-    quiz = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^(Начать)$') & ~Filters.command, start_quiz_questions)],
-        states={
-            'new_question': [MessageHandler(Filters.regex('^(Новый вопрос)$') & ~Filters.command, wrap_handle_new_question_request)],
-            'user_answer': [MessageHandler(Filters.text & ~Filters.command, wrap_user_answer)],
-        },
-        fallbacks=[]
-    )
-
-    dispatcher.add_handler(quiz)
+    
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(MessageHandler(Filters.regex('^(Начать)$') & ~Filters.command, start_quiz_questions))
+    dispatcher.add_handler(MessageHandler(Filters.regex('^(Новый вопрос)$') & ~Filters.command, wrap_handle_new_question_request))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_user_answer))
 
     updater.start_polling()
 
