@@ -147,7 +147,6 @@ def main() -> None:
 
     quiz_questions = union_questions(files_path)
 
-    wrap_handle_new_question_request = partial(handle_new_question_request, quiz_questions=quiz_questions)
     wrap_user_answer = partial(handle_solution_attempt, quiz_questions=quiz_questions)
 
     """Start the bot."""
@@ -157,7 +156,6 @@ def main() -> None:
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.regex('^(Начать)$') & ~Filters.command, start_quiz_questions))
-    dispatcher.add_handler(MessageHandler(Filters.regex('^(Новый вопрос)$') & ~Filters.command, wrap_handle_new_question_request))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, wrap_user_answer))
 
     updater.start_polling()
